@@ -3,6 +3,7 @@
 require 'pp'
 require 'optparse'
 require 'logger'
+require 'date'
 
 require 'packer_templates/vsphere'
 require 'packer_templates/packer'
@@ -73,8 +74,10 @@ class ProvisionVsphere
 
 		@logger.info("Creating instance #{@options[:server_name]}")
 
+		name = @options[:server_name] + "-" + DateTime.now.strftime("%Y-%m-%d %H-%M-%S")
+
 		instance_params = {
-			:name => @options[:server_name],
+			:name => name,
 		}
 
 		@vm = @vsphere.create_instance(template, instance_params)
