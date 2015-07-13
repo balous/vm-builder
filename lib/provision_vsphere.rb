@@ -38,8 +38,8 @@ class ProvisionVsphere
 				options[:pass] = val
 			end
 
-			opts.on("--=password", "Virtual center login password") do |val|
-				options[:pass] = val
+			opts.on("--ssh_username=name", "Guest OS login name") do |val|
+				options[:ssh_username] = val
 			end
 
 			opts.on('-h', '--help', "Print usage") do
@@ -47,7 +47,7 @@ class ProvisionVsphere
 			end
 		end.parse!
 
-		[:server_name, :vm_template, :packer_template, :host, :user, :pass].each do |option|
+		[:server_name, :vm_template, :packer_template, :host, :user, :pass, :ssh_username].each do |option|
 			raise "Option '#{option}' must be specified!" if options[option].nil?
 		end
 
@@ -102,8 +102,9 @@ class ProvisionVsphere
 		@logger.info("Provisioning with packer")
 
 		variables = {
-			:ssh_address => @ip,
+			:ssh_address  => @ip,
 			:server_name  => @options[:server_name],
+			:ssh_username => @options[:ssh_username],
 		}
 
 		flags = [
