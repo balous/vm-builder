@@ -85,6 +85,21 @@ module PackerTemplates
 				sleep 5
 			end 
 		end
+
+		def register_instance(params)
+
+			path = "[#{params[:datastore]}]#{params[:path]}"
+
+			#try default standalone esx pool if not specified otherwise
+			pool = params[:pool] ? params[:pool] : @connection.serviceInstance.find_datacenter.hostFolder.children.first.resourcePool
+
+			@connection.serviceInstance.find_datacenter.vmFolder.RegisterVM_Task(
+				:path => path,
+				:name => params[:name],
+				:asTemplate => false,
+				:pool => pool,
+			)
+		end
 	end
 end
 
