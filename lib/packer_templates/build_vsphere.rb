@@ -102,9 +102,12 @@ module PackerTemplates
 
 		def go
 			@logger = Logger.new(STDOUT)
+			@logger.info("Building '#{@name}' on hypervisor '#{vsphere_host}'.")
 
 			build_template
 			register_template
+
+			@logger.info("Finished successfully.")
 		end
 	end
 end
