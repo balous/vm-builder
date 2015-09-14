@@ -93,12 +93,15 @@ module PackerTemplates
 			#try default standalone esx pool if not specified otherwise
 			pool = params[:pool] ? params[:pool] : @connection.serviceInstance.find_datacenter.hostFolder.children.first.resourcePool
 
-			@connection.serviceInstance.find_datacenter.vmFolder.RegisterVM_Task(
+			task = @connection.serviceInstance.find_datacenter.vmFolder.RegisterVM_Task(
 				:path => path,
 				:name => params[:name],
 				:asTemplate => false,
 				:pool => pool,
 			)
+			if task.info.state != "success"
+				raise "Unable to register VM: #{task.info.error.localizedMessage}"
+			end
 		end
 	end
 end
