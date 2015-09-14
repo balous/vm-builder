@@ -99,6 +99,9 @@ module PackerTemplates
 				:asTemplate => false,
 				:pool => pool,
 			)
+
+			task.wait_for_completion
+
 			if task.info.state != "success"
 				raise "Unable to register VM: #{task.info.error.localizedMessage}"
 			end
