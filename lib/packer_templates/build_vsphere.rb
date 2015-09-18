@@ -11,7 +11,7 @@ module PackerTemplates
 	class BuildVsphere
 
 		attr_reader :vsphere_host, :vsphere_user, :vsphere_pass, :vsphere_network,
-			:vsphere_datastore, :packer_template, :name,
+			:vsphere_datastore, :vsphere_pool, :packer_template, :name,
 			:ssh_user, :ssh_pass
 
 		def initialize(params)
@@ -22,15 +22,18 @@ module PackerTemplates
 			@ssh_user        = params[:ssh_user]
 			@ssh_pass        = params[:ssh_pass]
 
+			@vsphere_host      = params[:vsphere_host]
+			@vsphere_network   = params[:vsphere_network]
+			@vsphere_datastore = params[:vsphere_datastore]
+			@vsphere_pool      = params[:vsphere_pool]
+
 			parse_cli(params[:cli_opts])
+			validate_params()
 		end
 
 		def parse_cli(cli_opts)
 			@vsphere_user      = ENV["vsphere_user"]
 			@vsphere_pass      = ENV["vsphere_password"]
-			@vsphere_host      = 'plz-esxi9.samepage.in'
-			@vsphere_network   = 'VLAN 353 - test PLZ'
-			@vsphere_datastore = 'datastore1'
 
 			OptionParser.new do |opts|
 				opts.banner = "Usage: #{$PROGRAM_NAME} [opts]"
@@ -51,10 +54,16 @@ module PackerTemplates
 					@vsphere_user = val
 				end
 
-				opts.on("--vsphere-password=password", "vSphere connection pasword") do |val|
+				opts.on("--vsphere-password=password", "vSphere connection password") do |val|
 					@vsphere_pass = val
 				end
 			end.parse!(cli_opts)
+		end
+
+		def validate_params()
+			raise "Datastore must be specified." if @vsphere_datastore.nil?
+			raise "Virtual network must be specified." if @vsphere_network.nil?
+			raise "vSphere host must be specified." if @vsphere_host.nil?
 		end
 
 		def get_variables
@@ -97,6 +106,7 @@ module PackerTemplates
 				name: @name,
 				path: path,
 				datastore: @vsphere_datastore,
+				pool: @vsphere_pool,
 			)
 		end
 

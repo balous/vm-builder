@@ -12,7 +12,7 @@ module PackerTemplates
 
 		def list_folder(folder)
 			result = []
-
+pp folder
 			folder.children.each do |entity|
 				type, junk = entity.to_s.split('(')
 
@@ -90,14 +90,17 @@ module PackerTemplates
 
 			path = "[#{params[:datastore]}]#{params[:path]}"
 
-			#try default standalone esx pool if not specified otherwise
-			pool = params[:pool] ? params[:pool] : @connection.serviceInstance.find_datacenter.hostFolder.children.first.resourcePool
+			pool = @connection.serviceInstance.find_datacenter.hostFolder.children.first.resourcePool
+			
+			if ! params[:pool].nil?
+				pool = pool.traverse(params[:pool])
+			end
 
 			task = @connection.serviceInstance.find_datacenter.vmFolder.RegisterVM_Task(
 				:path => path,
 				:name => params[:name],
 				:asTemplate => false,
-				:pool => pool,
+				:pool => pool,  # this param must be present but VMware registers always to the root pool. Don't know why.
 			)
 
 			task.wait_for_completion
