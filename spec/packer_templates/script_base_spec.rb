@@ -12,18 +12,19 @@ describe PackerTemplates::ScriptBase do
 			ssh_user: 'testuser',
 			ssh_pass: 'testpass',
 
-			vsphere_host:      'testhost',
-			vsphere_datastore: 'testdatastore',
-			vsphere_network:   'testnetwork',
-			vsphere_pool:      'testpool',
+			vsphere_host:             'testhost',
+			vsphere_datastore:        'testdatastore',
+			vsphere_network:          'testnetwork',
+			vsphere_pool:             'testpool',
+			vsphere_compute_resource: 'testcompute',
 		)
 	end
 
-	before {
+	before do
 		now = double
 		allow(now).to receive(:strftime).and_return("2015-09-09-13-55-54")
 		allow(DateTime).to receive(:now).and_return(now)
-	}
+	end
 
 	describe 'initialize' do
 		context 'default values' do
@@ -43,6 +44,7 @@ describe PackerTemplates::ScriptBase do
 			it {expect(script.vsphere_user).to eq "testuser"}
 			it {expect(script.vsphere_pass).to eq "testpass"}
 			it {expect(script.vsphere_pool).to eq "testpool"}
+			it {expect(script.vsphere_compute_resource).to eq "testcompute"}
 			it {expect(script.vsphere_datastore).to eq "testdatastore"}
 			it {expect(script.vsphere_network).to eq "testnetwork"}
 			it {expect(script.name).to eq "testvm-2015-09-09-13-55-54"}

@@ -40,7 +40,10 @@ module PackerTemplates
 			@logger.info("Creating instance #{@name}")
 
 			instance_params = {
-				:name => name,
+				:name             => name,
+				:resource_pool    => @vsphere_pool,
+				:compute_resource => @vsphere_compute_resource,
+				:datastore        => @vsphere_datastore,
 			}
 
 			@vm = @vsphere.create_instance(template, instance_params)

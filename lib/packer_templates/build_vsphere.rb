@@ -51,7 +51,6 @@ module PackerTemplates
 				name: @name,
 				path: path,
 				datastore: @vsphere_datastore,
-				pool: @vsphere_pool,
 			)
 		end
 

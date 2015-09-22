@@ -8,7 +8,7 @@ module PackerTemplates
 	class ScriptBase
 
 		attr_reader :vsphere_host, :vsphere_user, :vsphere_pass, :vsphere_network,
-			:vsphere_datastore, :vsphere_pool, :packer_template, :name,
+			:vsphere_datastore, :vsphere_pool, :vsphere_compute_resource, :packer_template, :name,
 			:ssh_user, :ssh_pass
 
 		def initialize(params)
@@ -19,10 +19,11 @@ module PackerTemplates
 			@ssh_user        = params[:ssh_user]
 			@ssh_pass        = params[:ssh_pass]
 
-			@vsphere_host      = params[:vsphere_host]
-			@vsphere_network   = params[:vsphere_network]
-			@vsphere_datastore = params[:vsphere_datastore]
-			@vsphere_pool      = params[:vsphere_pool]
+			@vsphere_host             = params[:vsphere_host]
+			@vsphere_network          = params[:vsphere_network]
+			@vsphere_datastore        = params[:vsphere_datastore]
+			@vsphere_pool             = params[:vsphere_pool]
+			@vsphere_compute_resource = params[:vsphere_compute_resource]
 
 			parse_cli(params[:cli_opts])
 			validate_params()

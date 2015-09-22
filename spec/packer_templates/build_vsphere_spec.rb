@@ -80,7 +80,6 @@ describe PackerTemplates::BuildVsphere do
 					name: 'testvm-2015-09-09-13-55-54',
 					path: 'testvm-2015-09-09-13-55-54/testvm-2015-09-09-13-55-54.vmx',
 					datastore: 'testdatastore',
-					pool: 'testpool',
 				}
 			)
 

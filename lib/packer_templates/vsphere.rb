@@ -49,6 +49,15 @@ module PackerTemplates
 
 			relocateSpec = RbVmomi::VIM.VirtualMachineRelocateSpec
 
+			if !params[:compute_resource].nil?
+                        	host = @connection.serviceInstance.find_datacenter.hostFolder.find(params[:compute_resource])
+				relocateSpec.pool = get_resource_pool(host, params[:resource_pool])
+				relocateSpec.host = host.host.first
+			end
+
+			relocateSpec.datastore = @connection.serviceInstance.find_datacenter.find_datastore(params[:datastore])
+
+
 			spec = RbVmomi::VIM.VirtualMachineCloneSpec(
 				:location => relocateSpec,
 				:powerOn  => false,
@@ -90,17 +99,14 @@ module PackerTemplates
 
 			path = "[#{params[:datastore]}]#{params[:path]}"
 
+			# this is not designed to work with vcenter and standalone ESX doesn't seem to support registration to subpool
 			pool = @connection.serviceInstance.find_datacenter.hostFolder.children.first.resourcePool
 			
-			if ! params[:pool].nil?
-				pool = pool.traverse(params[:pool])
-			end
-
 			task = @connection.serviceInstance.find_datacenter.vmFolder.RegisterVM_Task(
 				:path => path,
 				:name => params[:name],
 				:asTemplate => false,
-				:pool => pool,  # this param must be present but VMware registers always to the root pool. Don't know why.
+				:pool => pool,
 			)
 
 			task.wait_for_completion
@@ -108,6 +114,17 @@ module PackerTemplates
 			if task.info.state != "success"
 				raise "Unable to register VM: #{task.info.error.localizedMessage}"
 			end
+		end
+
+		def get_resource_pool(host, name)
+
+			pool = host.resourcePool
+
+			if ! name.nil?
+				pool = pool.traverse(name)
+			end
+
+			return pool
 		end
 	end
 end
