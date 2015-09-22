@@ -12,7 +12,7 @@ module PackerTemplates
 
 		def list_folder(folder)
 			result = []
-pp folder
+
 			folder.children.each do |entity|
 				type, junk = entity.to_s.split('(')
 
