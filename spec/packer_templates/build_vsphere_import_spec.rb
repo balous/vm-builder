@@ -12,10 +12,11 @@ describe PackerTemplates::BuildVsphereImport do
 			ssh_user: 'testuser',
 			ssh_pass: 'testpass',
 
-			vsphere_host:      'testhost',
-			vsphere_datastore: 'testdatastore',
-			vsphere_network:   'testnetwork',
-			vsphere_pool:      'testpool',
+			vsphere_host:             'testhost',
+			vsphere_datastore:        'testdatastore',
+			vsphere_network:          'testnetwork',
+			vsphere_pool:             'testpool',
+			vsphere_compute_resource: 'testcompute',
 
 			cloudinit:        true,
 		)
@@ -36,7 +37,7 @@ describe PackerTemplates::BuildVsphereImport do
 		context 'Successful import' do
 			it 'Executes ovftool command' do
 				expect(build_vsphere).to receive(:system)
-					.with("ovftool --name=\"testvm-2015-09-09-13-55-54\" --datastore=\"testdatastore\" --network=\"testnetwork\" \"./output-vmware-iso/testtemplate.vmx\" \"vi://testdomain%2Ftestuser:testpass@testhost\"")
+					.with("ovftool --name=\"testvm-2015-09-09-13-55-54\" --datastore=\"testdatastore\" --network=\"testnetwork\" \"./output-vmware-iso/testtemplate.vmx\" \"vi://testdomain%2Ftestuser:testpass@testhost/testcompute/Resources/testpool\"")
 					.and_return(true)
 
 				build_vsphere.import_vm()

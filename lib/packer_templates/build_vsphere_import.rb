@@ -87,7 +87,14 @@ module PackerTemplates
 
 			vsphere_user = CGI.escape(@vsphere_user)
 
-			command = "ovftool --name=\"#{@name}\" --datastore=\"#{@vsphere_datastore}\" --network=\"#{@vsphere_network}\" \"#{vmx_path}\" \"vi://#{vsphere_user}:#{vsphere_pass}@#{@vsphere_host}\""
+			command = [
+				"ovftool",
+				"--name=\"#{@name}\"",
+				"--datastore=\"#{@vsphere_datastore}\"",
+				"--network=\"#{@vsphere_network}\"",
+				"\"#{vmx_path}\"",
+				"\"vi://#{vsphere_user}:#{vsphere_pass}@#{@vsphere_host}/#{@vsphere_compute_resource}/Resources/#{@vsphere_pool}\"",
+			].join(" ")
 
 			return command
 		end
