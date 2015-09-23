@@ -12,9 +12,12 @@ require 'packer_templates/packer'
 module PackerTemplates
 	class ProvisionVsphere < ScriptBase 
 
+		attr_reader :vm_config, :base_template
+
 		def initialize(params)
 
 			@base_template = params[:base_template]
+			@vm_config     = params[:vm_config]
 			super(params)
 		end
 
@@ -31,7 +34,7 @@ module PackerTemplates
 			regexp = Regexp.new("#{@base_template}-\\d\\d\\d\\d-\\d\\d-\\d\\d-\\d\\d-\\d\\d-\\d\\d")
 			templates = @vsphere.list_templates(regexp)
 
-			template = templates.sort{|a, b| pp a.name, b.name; a.name <=> b.name}[-1]
+			template = templates.sort{|a, b| a.name <=> b.name}[-1]
 
 			raise "Unable to find template '#{@base_template}]}'" if template.nil?
 
@@ -48,7 +51,8 @@ module PackerTemplates
 
 			@vm = @vsphere.create_instance(template, instance_params)
 
-#			@vm = @vsphere.list_templates(Regexp.new("^#{@options[:server_name]}$"))[0]
+			@logger.info("Configuring virtual HW")
+			@vsphere.reconfigure_vm(@vm, @vm_config)
 
 			@logger.info("Starting instance #{@vm.name}")
 			@vsphere.start_instance(@vm)

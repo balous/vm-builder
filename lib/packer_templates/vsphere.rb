@@ -45,6 +45,32 @@ module PackerTemplates
 			return result
 		end
 
+		def reconfigure_vm(vm, params)
+
+			disk_changes = []
+
+			params[:disks].each do |label, size|
+				oldDisk = vm.disks.find{|d| d.deviceInfo.label == label}
+				newDisk = oldDisk.dup
+				newDisk.capacityInKB = size * 1024 * 1024
+
+				change = RbVmomi::VIM.VirtualDeviceConfigSpec(
+					device: newDisk,
+					operation: :edit,
+				)
+
+				disk_changes.push change
+			end
+
+			config = RbVmomi::VIM.VirtualMachineConfigSpec(
+				memoryMB: params[:mem],
+				numCPUs: params[:cpus],
+				deviceChange: disk_changes,
+			)
+
+			vm.ReconfigVM_Task(:spec => config).wait_for_completion
+		end
+
 		def create_instance(template, params)
 
 			relocateSpec = RbVmomi::VIM.VirtualMachineRelocateSpec
@@ -57,11 +83,10 @@ module PackerTemplates
 
 			relocateSpec.datastore = @connection.serviceInstance.find_datacenter.find_datastore(params[:datastore])
 
-
 			spec = RbVmomi::VIM.VirtualMachineCloneSpec(
 				:location => relocateSpec,
 				:powerOn  => false,
-				:template => false
+				:template => false,
 			)
 
 			task = template.CloneVM_Task(
