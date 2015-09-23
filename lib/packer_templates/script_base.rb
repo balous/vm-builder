@@ -28,6 +28,9 @@ module PackerTemplates
 			parse_cli(params[:cli_opts])
 			validate_params()
 
+			STDOUT.sync = true
+			STDERR.sync = true
+
 			@logger = Logger.new(STDOUT)
 		end
 
