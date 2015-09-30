@@ -49,6 +49,8 @@ module PackerTemplates
 
 			disk_changes = []
 
+			params[:disks] = [] if params[:disks].nil?
+
 			params[:disks].each do |label, size|
 				oldDisk = vm.disks.find{|d| d.deviceInfo.label == label}
 				newDisk = oldDisk.dup
