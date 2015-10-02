@@ -72,10 +72,11 @@ module PackerTemplates
 			@logger.info("Provisioning with packer")
 
 			variables = {
-				:ssh_address  => @ip,
-				:server_name  => @name.gsub(/-\d\d\d\d-\d\d-\d\d-\d\d-\d\d-\d\d/, ""),
-				:ssh_username => @ssh_user,
-				:ssh_password => @ssh_pass,
+				:ssh_address      => @ip,
+				:server_name      => @name.gsub(/-\d\d\d\d-\d\d-\d\d-\d\d-\d\d-\d\d/, ""),
+				:ssh_username     => @ssh_user,
+				:ssh_password     => @ssh_pass,
+				:vsphere_instance => @vm.name,
 			}
 
 			flags = [
