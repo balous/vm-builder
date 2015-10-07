@@ -8,6 +8,15 @@ module PackerTemplates
 		def initialize(hostname, username, password)
 
 			@connection = RbVmomi::VIM.connect host: hostname, user: username, password: password, insecure: true
+
+			@watchdog = Thread.new {watch_dog()}
+		end
+
+		def watch_dog()
+			while true do
+				@connection.serviceInstance.CurrentTime()
+				sleep 60
+			end
 		end
 
 		def list_folder(folder)
