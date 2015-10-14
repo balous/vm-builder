@@ -93,6 +93,7 @@ module PackerTemplates
 			end
 
 			relocateSpec.datastore = @connection.serviceInstance.find_datacenter.find_datastore(params[:datastore])
+			relocateSpec.transform = RbVmomi::VIM.VirtualMachineRelocateTransformation('sparse')
 
 			spec = RbVmomi::VIM.VirtualMachineCloneSpec(
 				:location => relocateSpec,
