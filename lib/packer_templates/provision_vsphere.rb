@@ -22,7 +22,7 @@ module PackerTemplates
 		end
 
 		def connect
-			@logger.info("Connecting to #{:vsphere_host}")
+			@logger.info("Connecting to #{@vsphere_host}")
 
 			@vsphere = PackerTemplates::Vsphere.new(@vsphere_host, @vsphere_user, @vsphere_pass)
 		end
