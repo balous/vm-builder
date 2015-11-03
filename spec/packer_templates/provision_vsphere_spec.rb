@@ -56,14 +56,13 @@ describe PackerTemplates::ProvisionVsphere do
 			expect(vsphere).to receive(:create_instance)
 				.with(template, {name: 'testvm-2015-09-09-13-55-54', resource_pool: 'testpool', compute_resource: 'testcompute', datastore: 'testdatastore'})
 				.and_return(instance)
-			expect(vsphere).to receive(:reconfigure_vm).with(instance, {foo: 'bar'})
 			expect(vsphere).to receive(:start_instance).with(instance)
 			expect(vsphere).to receive(:get_vm_address).with(instance).and_return('1.1.1.1')
 			provision_vsphere.create_server
 		end
 	end
 
-	describe "provision_server" do
+	describe "#provision_server" do
 
 		before do
 			vm = double("VM")

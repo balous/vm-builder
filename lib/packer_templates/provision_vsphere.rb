@@ -51,9 +51,6 @@ module PackerTemplates
 
 			@vm = @vsphere.create_instance(template, instance_params)
 
-			@logger.info("Configuring virtual HW")
-			@vsphere.reconfigure_vm(@vm, @vm_config)
-
 			@logger.info("Starting instance #{@vm.name}")
 			@vsphere.start_instance(@vm)
 
@@ -88,6 +85,11 @@ module PackerTemplates
 			raise "Provisioning failed." if not ret
 		end
 
+		def reconfigure_vm
+			@logger.info("Configuring virtual HW")
+			@vsphere.reconfigure_vm(@vm, @vm_config)
+		end
+
 		def go
 			@logger = Logger.new(STDOUT)
 
@@ -95,6 +97,7 @@ module PackerTemplates
 			create_server
 			provision_server
 			stop_server
+			reconfigure_vm
 		end
 	end
 end

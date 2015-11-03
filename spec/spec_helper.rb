@@ -3,8 +3,6 @@ ENV['RACK_ENV'] = 'test'
 require 'json'
 require 'webmock/rspec'
 require 'rspec/its'
-#require 'log4r'
-#require 'log4r/yamlconfigurator'
 
 RSpec.configure do |config|
   config.mock_with :rspec

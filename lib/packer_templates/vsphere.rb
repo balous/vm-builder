@@ -60,10 +60,12 @@ module PackerTemplates
 
 			params[:disks] = [] if params[:disks].nil?
 
-			params[:disks].each do |label, size|
+			params[:disks].each do |label, params|
 				oldDisk = vm.disks.find{|d| d.deviceInfo.label == label}
 				newDisk = oldDisk.dup
-				newDisk.capacityInKB = size * 1024 * 1024
+
+				newDisk.capacityInKB     = params[:capacity] * 1024 * 1024 if not params[:capacity].nil?
+				newDisk.backing.diskMode = params[:mode]                   if not params[:mode].nil?
 
 				change = RbVmomi::VIM.VirtualDeviceConfigSpec(
 					device: newDisk,
