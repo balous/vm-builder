@@ -65,7 +65,13 @@ describe PackerTemplates::ProvisionVsphere do
 
 	describe "provision_server" do
 
-		before { provision_vsphere.instance_variable_set("@ip", '1.1.1.1')}
+		before do
+			vm = double("VM")
+			allow(vm).to receive(:name).and_return('vmname')
+			provision_vsphere.instance_variable_set("@vm", vm)
+
+			provision_vsphere.instance_variable_set("@ip", '1.1.1.1')
+		end
 
 		it 'Calls packer' do
 			expect(PackerTemplates::Packer).to receive(:build)
@@ -73,10 +79,11 @@ describe PackerTemplates::ProvisionVsphere do
 				'testtemplate.json',
 				'null',
 				{
-					:ssh_address  => '1.1.1.1',
-					:server_name  => 'testvm',
-					:ssh_username => 'testuser',
-					:ssh_password => 'testpass',
+					:ssh_address      => '1.1.1.1',
+					:server_name      => 'testvm',
+					:ssh_username     => 'testuser',
+					:ssh_password     => 'testpass',
+					:vsphere_instance => 'vmname',
 				},
 				[]
 			)
