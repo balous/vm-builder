@@ -1,7 +1,6 @@
 #!/usr/bin/expect
 # VMware tools install with expect
 
-# Decompress tools payload
 spawn /tmp/ovftool/$env(OVFTOOL_BUNDLE)
 
 expect "*Press Enter to proceed."
