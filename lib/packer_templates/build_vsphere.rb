@@ -7,6 +7,7 @@ require 'tempfile'
 require 'packer_templates/packer'
 require 'packer_templates/vsphere'
 require 'packer_templates/script_base'
+require 'packer_templates/ovftool'
 
 module PackerTemplates
 	class BuildVsphere < ScriptBase
@@ -61,6 +62,25 @@ module PackerTemplates
 			register_template
 
 			@logger.info("Finished successfully.")
+		end
+
+		def export_vm (dest)
+
+			@logger.info("Exporting vm '#{@name}' to OVF '#{dest}'.")
+			return PackerTemplates::OvfTool.export(
+				dest:      dest,
+				name:      @name,
+				host:      @vsphere_host,
+				user:      @vsphere_user,
+				password:  @vsphere_pass,
+				folder:    nil,
+				datastore: nil,
+			)
+		end
+
+		def delete_vm
+			@logger.info("Deleting vm '#{@name}'.")
+			@vsphere.delete_instance(@vm)
 		end
 	end
 end

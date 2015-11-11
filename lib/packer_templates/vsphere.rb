@@ -153,6 +153,18 @@ module PackerTemplates
 			if task.info.state != "success"
 				raise "Unable to register VM: #{task.info.error.localizedMessage}"
 			end
+
+			return task.info.result
+		end
+
+		def delete_instance(vm)
+			task = vm.Destroy_Task
+
+			task.wait_for_completion
+
+			if task.info.state != "success"
+				raise "Unable to delete VM: #{task.info.error.localizedMessage}"
+			end
 		end
 
 		def get_resource_pool(host, name)

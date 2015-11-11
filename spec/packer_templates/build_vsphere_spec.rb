@@ -90,5 +90,30 @@ describe PackerTemplates::BuildVsphere do
 			build_vsphere.register_template
 		end
 	end
+
+	describe '#export_vm' do
+		it 'Calls OvfTool' do
+			expect(PackerTemplates::OvfTool).to receive(:export)
+				.with(
+					dest:      'destination',
+					name:      'testvm-2015-09-09-13-55-54',
+					host:      'testhost',
+					user:      'testuser',
+					password:  'testpass',
+					folder:    nil,
+					datastore: nil,
+				)
+
+			build_vsphere.export_vm('destination')
+		end
+	end
+
+	describe '#delete_vm' do
+		it 'Calls Vsphere' do
+			expect(vsphere).to receive(:delete_instance)
+			build_vsphere.connect_vsphere
+			build_vsphere.delete_vm
+		end
+	end
 end
 
