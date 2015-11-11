@@ -12,20 +12,26 @@ require 'packer_templates/ovftool'
 module PackerTemplates
 	class BuildVsphere < ScriptBase
 
+		def initialize(params)
+
+			@vsphere_host_thumbprint = params[:vsphere_host_thumbprint]
+			super(params)
+		end
+
 		def get_variables
 
 			return {
-				:vm_name           => @name,
-				:output_directory  => @name,
-				:ssh_username      => @ssh_user,
-				:ssh_password      => @ssh_pass,
-				:remote_type       => 'esx5',
-				:remote_host       => @vsphere_host,
-				:remote_username   => @vsphere_user,
-				:remote_password   => @vsphere_pass,
-				:vm_network        => @vsphere_network,
-				:remote_datastore  => @vsphere_datastore,
-				:cm		   => 'puppet',
+				:vm_name                => @name,
+				:output_directory       => @name,
+				:ssh_username           => @ssh_user,
+				:ssh_password           => @ssh_pass,
+				:remote_type            => 'esx5',
+				:remote_host            => @vsphere_host,
+				:remote_username        => @vsphere_user,
+				:remote_password        => @vsphere_pass,
+				:vm_network             => @vsphere_network,
+				:remote_datastore       => @vsphere_datastore,
+				:cm		        => 'puppet',
 			}
 		end
 
@@ -68,13 +74,14 @@ module PackerTemplates
 
 			@logger.info("Exporting vm '#{@name}' to OVF '#{dest}'.")
 			return PackerTemplates::OvfTool.export(
-				dest:      dest,
-				name:      @name,
-				host:      @vsphere_host,
-				user:      @vsphere_user,
-				password:  @vsphere_pass,
-				folder:    nil,
-				datastore: nil,
+				dest:            dest,
+				name:            @name,
+				host:            @vsphere_host,
+				user:            @vsphere_user,
+				host_thumbprint: @vsphere_host_thumbprint,
+				password:        @vsphere_pass,
+				folder:          nil,
+				datastore:       nil,
 			)
 		end
 

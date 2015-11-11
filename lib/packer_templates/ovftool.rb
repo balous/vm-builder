@@ -23,7 +23,13 @@ module PackerTemplates
 
 			path = paths.join('/')
 
-			command = "ovftool vi://#{user}:#{params[:password]}@#{params[:host]}/#{path} #{dest}"
+			parts = []
+			parts.push('ovftool')
+			parts.push("--sourceSSLThumbprint=#{params[:host_thumbprint]}") if not params[:host_thumbprint].nil?
+			parts.push("vi://#{user}:#{params[:password]}@#{params[:host]}/#{path}")
+			parts.push("#{dest}")
+
+			command = parts.join(" ")
 
 			Logger.new(STDOUT).info("Starting command '#{command}'")
 
@@ -33,4 +39,3 @@ module PackerTemplates
 		end
 	end
 end
-

@@ -12,10 +12,11 @@ describe PackerTemplates::BuildVsphere do
 			ssh_user: 'testuser',
 			ssh_pass: 'testpass',
 
-			vsphere_host:      'testhost',
-			vsphere_datastore: 'testdatastore',
-			vsphere_network:   'testnetwork',
-			vsphere_pool:      'testpool',
+			vsphere_host:            'testhost',
+			vsphere_host_thumbprint: '00:11:22',
+			vsphere_datastore:       'testdatastore',
+			vsphere_network:         'testnetwork',
+			vsphere_pool:            'testpool',
 		)
 	end
 
@@ -95,13 +96,14 @@ describe PackerTemplates::BuildVsphere do
 		it 'Calls OvfTool' do
 			expect(PackerTemplates::OvfTool).to receive(:export)
 				.with(
-					dest:      'destination',
-					name:      'testvm-2015-09-09-13-55-54',
-					host:      'testhost',
-					user:      'testuser',
-					password:  'testpass',
-					folder:    nil,
-					datastore: nil,
+					dest:            'destination',
+					name:            'testvm-2015-09-09-13-55-54',
+					host:            'testhost',
+					host_thumbprint: '00:11:22',
+					user:            'testuser',
+					password:        'testpass',
+					folder:          nil,
+					datastore:       nil,
 				)
 
 			build_vsphere.export_vm('destination')

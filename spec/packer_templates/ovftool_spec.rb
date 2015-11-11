@@ -2,7 +2,28 @@ require 'spec_helper'
 require 'packer_templates/ovftool'
 
 describe PackerTemplates::OvfTool do
+	before do
+		  $stdout.stub(:write)
+	end
+
 	describe "::export" do
+		context "with host thumbprint" do
+			it do
+				expect(Kernel).to receive(:system).with('ovftool --sourceSSLThumbprint=00:11:22 vi://testuser%40testdomain:testpass@testhost/name destination.ovf')
+
+				described_class.export({
+					dest:            'destination',
+					name:            'name',
+					host:            'testhost',
+					user:            'testuser@testdomain',
+					host_thumbprint: "00:11:22",
+					password:        'testpass',
+					folder:          nil,
+					datastore:       nil,
+				})
+			end
+		end
+
 		context "adds ovf extension" do
 			it do
 				expect(Kernel).to receive(:system).with('ovftool vi://testuser%40testdomain:testpass@testhost/name destination.ovf')
