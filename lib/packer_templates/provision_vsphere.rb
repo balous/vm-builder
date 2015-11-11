@@ -21,13 +21,7 @@ module PackerTemplates
 			super(params)
 		end
 
-		def connect
-			@logger.info("Connecting to #{@vsphere_host}")
-
-			@vsphere = PackerTemplates::Vsphere.new(@vsphere_host, @vsphere_user, @vsphere_pass)
-		end
-
-		def create_server 
+		def create_server
 
 			@logger.info("Listing templates")
 			# get the latest template
@@ -43,7 +37,7 @@ module PackerTemplates
 			@logger.info("Creating instance #{@name}")
 
 			instance_params = {
-				:name             => name,
+				:name             => @name,
 				:resource_pool    => @vsphere_pool,
 				:compute_resource => @vsphere_compute_resource,
 				:datastore        => @vsphere_datastore,
@@ -93,7 +87,7 @@ module PackerTemplates
 		def go
 			@logger = Logger.new(STDOUT)
 
-			connect
+			connect_vsphere
 			create_server
 			provision_server
 			stop_server

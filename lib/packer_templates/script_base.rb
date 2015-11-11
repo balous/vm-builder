@@ -3,6 +3,7 @@ require 'optparse'
 require 'date'
 require 'logger'
 require 'tempfile'
+require 'packer_templates/vsphere'
 
 module PackerTemplates
 	class ScriptBase
@@ -61,6 +62,12 @@ module PackerTemplates
 					@vsphere_pass = val
 				end
 			end.parse!(cli_opts)
+		end
+
+		def connect_vsphere
+			@logger.info("Connecting to #{@vsphere_host}")
+
+			@vsphere = PackerTemplates::Vsphere.new(@vsphere_host, @vsphere_user, @vsphere_pass)
 		end
 
 		def validate_params()

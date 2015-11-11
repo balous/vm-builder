@@ -26,7 +26,7 @@ describe PackerTemplates::ScriptBase do
 		allow(DateTime).to receive(:now).and_return(now)
 	end
 
-	describe 'initialize' do
+	describe '#initialize' do
 		context 'default values' do
 			let (:script) {described_class.new(cli_opts: [], name: 'testvm', vsphere_host: 'testhost', vsphere_datastore: 'testdatastore', vsphere_network: 'testnetwork')}
 
@@ -65,8 +65,22 @@ describe PackerTemplates::ScriptBase do
 		end
 	end
 
-	describe 'go' do
+	describe '#go' do
 		it {expect {script.go}.to raise_error(RuntimeError, "Not implemented.")}
+	end
+
+	describe '#connect_vsphere' do
+		it 'connects to host' do
+			vsphere = double
+
+			expect(PackerTemplates::Vsphere).to receive(:new)
+				.with(
+					'testhost', 'testuser', 'testpass'
+				)
+				.and_return(vsphere)
+
+			script.connect_vsphere
+		end
 	end
 end
 

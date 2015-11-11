@@ -19,6 +19,17 @@ describe PackerTemplates::BuildVsphere do
 		)
 	end
 
+	let (:vsphere) do
+		vsphere = double
+
+		allow(PackerTemplates::Vsphere).to receive(:new)
+			.with(
+				'testhost', 'testuser', 'testpass'
+			)
+			.and_return(vsphere)
+		vsphere
+	end
+
 	before {
 		now = double
 		allow(now).to receive(:strftime).and_return("2015-09-09-13-55-54")
@@ -29,7 +40,7 @@ describe PackerTemplates::BuildVsphere do
 		allow(Logger).to receive(:new).and_return(logger)
 	}
 
-	describe 'build_template' do
+	describe '#build_template' do
 		context 'Successfull execution' do
 			it 'Calls packer' do
 				expect(PackerTemplates::Packer).to receive(:build)
@@ -65,16 +76,8 @@ describe PackerTemplates::BuildVsphere do
 		end
 	end
 
-	describe 'register_template' do
+	describe '#register_template' do
 		it 'Calls Vsphere' do
-			vsphere = double
-
-			expect(PackerTemplates::Vsphere).to receive(:new)
-				.with(
-					'testhost', 'testuser', 'testpass'
-				)
-				.and_return(vsphere)
-
 			expect(vsphere).to receive(:register_instance).with(
 				{
 					name: 'testvm-2015-09-09-13-55-54',
@@ -83,6 +86,7 @@ describe PackerTemplates::BuildVsphere do
 				}
 			)
 
+			build_vsphere.connect_vsphere
 			build_vsphere.register_template
 		end
 	end

@@ -46,8 +46,7 @@ module PackerTemplates
 
 			@logger.info("Registering vmx file '#{path}'.")
 
-			@vsphere = PackerTemplates::Vsphere.new(@vsphere_host, @vsphere_user, @vsphere_pass)
-			@vsphere.register_instance(
+			@vm = @vsphere.register_instance(
 				name: @name,
 				path: path,
 				datastore: @vsphere_datastore,
@@ -57,6 +56,7 @@ module PackerTemplates
 		def go
 			@logger.info("Building '#{@name}' on hypervisor '#{vsphere_host}'.")
 
+			connect_vsphere
 			build_template
 			register_template
 
