@@ -8,7 +8,10 @@ describe PackerTemplates::ScriptBase do
 				"--vsphere-pass", "testpass",
 			],
 			name: "testvm",
+
 			packer_template: "testtemplate",
+			packer_vars:     {var: 'val'},
+
 			ssh_user: 'testuser',
 			ssh_pass: 'testpass',
 
@@ -49,6 +52,7 @@ describe PackerTemplates::ScriptBase do
 			it {expect(script.vsphere_network).to eq "testnetwork"}
 			it {expect(script.name).to eq "testvm-2015-09-09-13-55-54"}
 			it {expect(script.packer_template).to eq "testtemplate"}
+			it {expect(script.packer_vars).to include(var: 'val')}
 			it {expect(script.ssh_user).to eq "testuser"}
 			it {expect(script.ssh_pass).to eq "testpass"}
 		end

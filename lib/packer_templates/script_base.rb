@@ -9,14 +9,17 @@ module PackerTemplates
 	class ScriptBase
 
 		attr_reader :vsphere_host, :vsphere_user, :vsphere_pass, :vsphere_network,
-			:vsphere_datastore, :vsphere_pool, :vsphere_compute_resource, :packer_template, :name,
+			:vsphere_datastore, :vsphere_pool, :vsphere_compute_resource, :packer_template, :packer_vars, :name,
 			:ssh_user, :ssh_pass
 
 		def initialize(params)
 			suffix = "-" + DateTime.now.strftime("%Y-%m-%d-%H-%M-%S")
 
 			@name            = params[:name] + suffix
+
 			@packer_template = params[:packer_template]
+			@packer_vars     = params[:packer_vars]
+
 			@ssh_user        = params[:ssh_user]
 			@ssh_pass        = params[:ssh_pass]
 

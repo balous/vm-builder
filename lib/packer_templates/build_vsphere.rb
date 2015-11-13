@@ -20,7 +20,7 @@ module PackerTemplates
 
 		def get_variables
 
-			return {
+			vars = {
 				:vm_name                => @name,
 				:output_directory       => @name,
 				:ssh_username           => @ssh_user,
@@ -33,6 +33,10 @@ module PackerTemplates
 				:remote_datastore       => @vsphere_datastore,
 				:cm		        => 'puppet',
 			}
+
+			vars.merge!(@packer_vars) if not @packer_vars.nil?
+
+			return vars
 		end
 
 		def build_template

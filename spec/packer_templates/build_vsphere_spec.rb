@@ -8,7 +8,10 @@ describe PackerTemplates::BuildVsphere do
 				"--vsphere-pass", "testpass",
 			],
 			name: "testvm",
+
 			packer_template: "testtemplate.json",
+			packer_vars:     {var: 'val'},
+
 			ssh_user: 'testuser',
 			ssh_pass: 'testpass',
 
@@ -60,6 +63,7 @@ describe PackerTemplates::BuildVsphere do
 						:vm_network       => 'testnetwork',
 						:remote_datastore => 'testdatastore',
 						:cm               => 'puppet',
+						:var              => 'val',
 					},
 					['force']
 				)
