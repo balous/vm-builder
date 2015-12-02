@@ -65,7 +65,6 @@ module PackerTemplates
 				newDisk = oldDisk.dup
 
 				newDisk.capacityInKB     = params[:capacity] * 1024 * 1024 if not params[:capacity].nil?
-				newDisk.backing.diskMode = params[:mode]                   if not params[:mode].nil?
 
 				change = RbVmomi::VIM.VirtualDeviceConfigSpec(
 					device: newDisk,

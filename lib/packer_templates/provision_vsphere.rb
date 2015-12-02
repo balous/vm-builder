@@ -18,6 +18,7 @@ module PackerTemplates
 
 			@base_template = params[:base_template]
 			@vm_config     = params[:vm_config]
+			@finalize_hook = params[:finalize_hook]
 			super(params)
 		end
 
@@ -43,7 +44,14 @@ module PackerTemplates
 				:datastore        => @vsphere_datastore,
 			}
 
+			# if you want to start on existing VM, uncomment and update this
+#			@vm = @vsphere.list_templates(/tc-at-wheezy-2015-12-02-12-37-38/).sort{|a, b| a.name <=> b.name}[-1]
+#			return
+
 			@vm = @vsphere.create_instance(template, instance_params)
+
+			@logger.info("Configuring virtual HW")
+			@vsphere.reconfigure_vm(@vm, @vm_config)
 
 			@logger.info("Starting instance #{@vm.name}")
 			@vsphere.start_instance(@vm)
@@ -79,11 +87,6 @@ module PackerTemplates
 			raise "Provisioning failed." if not ret
 		end
 
-		def reconfigure_vm
-			@logger.info("Configuring virtual HW")
-			@vsphere.reconfigure_vm(@vm, @vm_config)
-		end
-
 		def go
 			@logger = Logger.new(STDOUT)
 
@@ -91,7 +94,7 @@ module PackerTemplates
 			create_server
 			provision_server
 			stop_server
-			reconfigure_vm
+			@finalize_hook.call(@logger, @vm) if not @finalize_hook.nil?
 		end
 	end
 end
