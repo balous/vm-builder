@@ -44,9 +44,8 @@ module PackerTemplates
 				:datastore        => @vsphere_datastore,
 			}
 
-			# if you want to start on existing VM, uncomment and update this
-#			@vm = @vsphere.list_templates(/tc-at-wheezy-2015-12-02-12-37-38/).sort{|a, b| a.name <=> b.name}[-1]
-#			return
+			# if you want to start on existing VM, uncomment and update this and comment some lines below
+#			@vm = @vsphere.list_templates(/saio-2015-12-02-15-14-02/).sort{|a, b| a.name <=> b.name}[-1]
 
 			@vm = @vsphere.create_instance(template, instance_params)
 
