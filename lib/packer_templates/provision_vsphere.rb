@@ -78,6 +78,8 @@ module PackerTemplates
 				:vsphere_instance => @vm.name,
 			}
 
+			variables.merge!(@packer_vars) if not @packer_vars.nil?
+
 			flags = [
 				#	'debug',
 			]
