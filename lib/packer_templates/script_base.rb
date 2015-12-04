@@ -13,7 +13,9 @@ module PackerTemplates
 			:ssh_user, :ssh_pass
 
 		def initialize(params)
+			suffix = "-" + DateTime.now.strftime("%Y-%m-%d-%H-%M-%S")
 
+			@name            = params[:name] + suffix
 
 			@packer_template = params[:packer_template]
 			@packer_vars     = params[:packer_vars]
@@ -28,10 +30,7 @@ module PackerTemplates
 			@vsphere_compute_resource = params[:vsphere_compute_resource]
 
 			parse_cli(params[:cli_opts])
-
 			validate_params()
-
-			@name = params[:name] + "-" + @vm_suffix
 
 			STDOUT.sync = true
 			STDERR.sync = true
@@ -40,10 +39,8 @@ module PackerTemplates
 		end
 
 		def parse_cli(cli_opts)
-			@vsphere_user = ENV["vsphere_user"]
-			@vsphere_pass = ENV["vsphere_password"]
-
-			@vm_suffix    = DateTime.now.strftime("%Y-%m-%d-%H-%M-%S")
+			@vsphere_user      = ENV["vsphere_user"]
+			@vsphere_pass      = ENV["vsphere_password"]
 
 			OptionParser.new do |opts|
 				opts.banner = "Usage: #{$PROGRAM_NAME} [opts]"
@@ -66,10 +63,6 @@ module PackerTemplates
 
 				opts.on("--vsphere-password=password", "vSphere connection password") do |val|
 					@vsphere_pass = val
-				end
-
-				opts.on("--vm-suffix=suffix", "Custom VM name suffix") do |val|
-					@vm_suffix = val
 				end
 			end.parse!(cli_opts)
 		end
