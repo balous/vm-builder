@@ -21,8 +21,8 @@ module PackerTemplates
 		def get_variables
 
 			vars = {
-				:vm_name                => @name,
-				:output_directory       => @name,
+				:vm_name                => @vm_name,
+				:output_directory       => @vm_name,
 				:ssh_username           => @ssh_user,
 				:ssh_password           => @ssh_pass,
 				:remote_type            => 'esx5',
@@ -40,7 +40,7 @@ module PackerTemplates
 		end
 
 		def build_template
-			@logger.info("Building VM #{@name}")
+			@logger.info("Building VM #{@vm_name}")
 
 			flags = [
 #				'debug',
@@ -53,19 +53,19 @@ module PackerTemplates
 		end
 
 		def register_template
-			path = "#{@name}/#{@name}.vmx"
+			path = "#{@vm_name}/#{@vm_name}.vmx"
 
 			@logger.info("Registering vmx file '#{path}'.")
 
 			@vm = @vsphere.register_instance(
-				name: @name,
+				name: @vm_name,
 				path: path,
 				datastore: @vsphere_datastore,
 			)
 		end
 
 		def go
-			@logger.info("Building '#{@name}' on hypervisor '#{vsphere_host}'.")
+			@logger.info("Building '#{@vm_name}' on hypervisor '#{vsphere_host}'.")
 
 			connect_vsphere
 			build_template
@@ -76,10 +76,10 @@ module PackerTemplates
 
 		def export_vm (dest)
 
-			@logger.info("Exporting vm '#{@name}' to OVF '#{dest}'.")
+			@logger.info("Exporting vm '#{@vm_name}' to OVF '#{dest}'.")
 			return PackerTemplates::OvfTool.export(
 				dest:            dest,
-				name:            @name,
+				name:            @vm_name,
 				host:            @vsphere_host,
 				user:            @vsphere_user,
 				host_thumbprint: @vsphere_host_thumbprint,
@@ -90,7 +90,7 @@ module PackerTemplates
 		end
 
 		def delete_vm
-			@logger.info("Deleting vm '#{@name}'.")
+			@logger.info("Deleting vm '#{@vm_name}'.")
 			@vsphere.delete_instance(@vm)
 		end
 	end

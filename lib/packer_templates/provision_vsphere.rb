@@ -35,10 +35,10 @@ module PackerTemplates
 
 			@logger.info("Found template: #{template.name}")
 
-			@logger.info("Creating instance #{@name}")
+			@logger.info("Creating instance #{@vm_name}")
 
 			instance_params = {
-				:name             => @name,
+				:name             => @vm_name,
 				:resource_pool    => @vsphere_pool,
 				:compute_resource => @vsphere_compute_resource,
 				:datastore        => @vsphere_datastore,
@@ -71,7 +71,7 @@ module PackerTemplates
 
 			variables = {
 				:ssh_address      => @ip,
-				:server_name      => @name.gsub(/-\d\d\d\d-\d\d-\d\d-\d\d-\d\d-\d\d/, ""),
+				:server_name      => @name,
 				:ssh_username     => @ssh_user,
 				:ssh_password     => @ssh_pass,
 				:vsphere_instance => @vm.name,

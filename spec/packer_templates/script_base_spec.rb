@@ -50,7 +50,8 @@ describe PackerTemplates::ScriptBase do
 			it {expect(script.vsphere_compute_resource).to eq "testcompute"}
 			it {expect(script.vsphere_datastore).to eq "testdatastore"}
 			it {expect(script.vsphere_network).to eq "testnetwork"}
-			it {expect(script.name).to eq "testvm-2015-09-09-13-55-54"}
+			it {expect(script.name).to eq "testvm"}
+			it {expect(script.vm_name).to eq "testvm-2015-09-09-13-55-54"}
 			it {expect(script.packer_template).to eq "testtemplate"}
 			it {expect(script.packer_vars).to include(var: 'val')}
 			it {expect(script.ssh_user).to eq "testuser"}
@@ -66,6 +67,12 @@ describe PackerTemplates::ScriptBase do
 		end
 		context 'missing datastore' do
 			it {expect{described_class.new(cli_opts: [], name: 'testvm', vsphere_host: 'testhost', vsphere_network: 'testnetwork')}.to raise_error(RuntimeError, 'Datastore must be specified.')}
+		end
+
+		context 'with vm_suffix' do
+			let (:script) {described_class.new(cli_opts: ['--vm-suffix', 'custom_name'], name: 'testvm', vsphere_host: 'testhost', vsphere_datastore: 'testdatastore', vsphere_network: 'testnetwork')}
+			it {expect(script.vm_name).to eq "testvm-custom_name"}
+			it {expect(script.name).to eq "testvm"}
 		end
 	end
 
