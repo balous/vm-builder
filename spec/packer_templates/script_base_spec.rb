@@ -62,9 +62,6 @@ describe PackerTemplates::ScriptBase do
 			it {expect{described_class.new(cli_opts: [], name: 'testvm', vsphere_datastore: 'testdatastore', vsphere_network: 'testnetwork')}.to raise_error(RuntimeError, "vSphere host must be specified.")}
 		end
 
-		context 'missing network' do
-			it {expect{described_class.new(cli_opts: [], name: 'testvm', vsphere_host: 'testhost', vsphere_datastore: 'testdatastore')}.to raise_error(RuntimeError, 'Virtual network must be specified.')}
-		end
 		context 'missing datastore' do
 			it {expect{described_class.new(cli_opts: [], name: 'testvm', vsphere_host: 'testhost', vsphere_network: 'testnetwork')}.to raise_error(RuntimeError, 'Datastore must be specified.')}
 		end

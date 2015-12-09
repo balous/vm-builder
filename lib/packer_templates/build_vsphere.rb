@@ -18,6 +18,11 @@ module PackerTemplates
 			super(params)
 		end
 
+		def validate_params()
+			raise "Virtual network must be specified." if @vsphere_network.nil?
+			super()
+		end
+
 		def get_variables
 
 			vars = {

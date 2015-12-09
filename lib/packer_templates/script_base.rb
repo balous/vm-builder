@@ -82,7 +82,6 @@ module PackerTemplates
 
 		def validate_params()
 			raise "Datastore must be specified." if @vsphere_datastore.nil?
-			raise "Virtual network must be specified." if @vsphere_network.nil?
 			raise "vSphere host must be specified." if @vsphere_host.nil?
 		end
 

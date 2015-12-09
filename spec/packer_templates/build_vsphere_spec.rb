@@ -44,6 +44,12 @@ describe PackerTemplates::BuildVsphere do
 		allow(Logger).to receive(:new).and_return(logger)
 	}
 
+	describe '#initialize' do
+		context 'missing network' do
+			it {expect{described_class.new(cli_opts: [], name: 'testvm', vsphere_host: 'testhost', vsphere_datastore: 'testdatastore')}.to raise_error(RuntimeError, 'Virtual network must be specified.')}
+		end
+	end
+
 	describe '#build_template' do
 		context 'Successfull execution' do
 			it 'Calls packer' do
