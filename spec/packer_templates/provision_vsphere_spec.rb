@@ -1,6 +1,8 @@
 require 'packer_templates/provision_vsphere'
 
 describe PackerTemplates::ProvisionVsphere do
+	let (:vm_config) {{foo: 'bar'}}
+
 	let (:provision_vsphere) do
 		described_class.new(
 			cli_opts: [
@@ -18,10 +20,18 @@ describe PackerTemplates::ProvisionVsphere do
 			vsphere_pool:             'testpool',
 			vsphere_compute_resource: 'testcompute',
 
-			vm_config: {foo: 'bar'},
+			vm_config: vm_config,
 
 			base_template:     'testbase',
 		)
+	end
+
+	let(:vsphere)  {double(PackerTemplates::Vsphere)}
+
+	let(:instance) do
+		i = double(RbVmomi::VIM::VirtualMachine)
+		allow(i).to receive(:name).and_return('testvm-2015-09-09-13-55-54')
+		i
 	end
 
 	before do
@@ -32,6 +42,8 @@ describe PackerTemplates::ProvisionVsphere do
 		logger = double
 		allow(logger).to receive(:info)
 		allow(Logger).to receive(:new).and_return(logger)
+
+		provision_vsphere.instance_variable_set("@vsphere", vsphere)
 	end
 
 	describe "#initialize" do
@@ -40,15 +52,7 @@ describe PackerTemplates::ProvisionVsphere do
 	end
 
 	describe "#create_server" do
-		let(:vsphere)  {double(PackerTemplates::Vsphere)}
 		let(:template) {double(RbVmomi::VIM::VirtualMachine)}
-		let(:instance) do
-			i = double(RbVmomi::VIM::VirtualMachine)
-			allow(i).to receive(:name).and_return('testvm-2015-09-09-13-55-54')
-			i
-		end
-
-		before { provision_vsphere.instance_variable_set("@vsphere", vsphere)}
 
 		it 'calls all the api correctly' do
 			expect(template).to receive(:name).and_return('testbase')
@@ -56,7 +60,7 @@ describe PackerTemplates::ProvisionVsphere do
 			expect(vsphere).to receive(:create_instance)
 				.with(template, {name: 'testvm-2015-09-09-13-55-54', resource_pool: 'testpool', compute_resource: 'testcompute', datastore: 'testdatastore'})
 				.and_return(instance)
-			expect(vsphere).to receive(:reconfigure_vm).with(instance, {:foo=>"bar"})
+			expect(vsphere).to receive(:reconfigure_vm).with(instance, vm_config)
 			expect(vsphere).to receive(:start_instance).with(instance)
 			expect(vsphere).to receive(:get_vm_address).with(instance).and_return('1.1.1.1')
 			provision_vsphere.create_server
@@ -66,10 +70,7 @@ describe PackerTemplates::ProvisionVsphere do
 	describe "#provision_server" do
 
 		before do
-			vm = double("VM")
-			allow(vm).to receive(:name).and_return('vmname')
-			provision_vsphere.instance_variable_set("@vm", vm)
-
+			provision_vsphere.instance_variable_set("@vm", instance)
 			provision_vsphere.instance_variable_set("@ip", '1.1.1.1')
 		end
 
@@ -83,13 +84,75 @@ describe PackerTemplates::ProvisionVsphere do
 					:server_name      => 'testvm',
 					:ssh_username     => 'testuser',
 					:ssh_password     => 'testpass',
-					:vsphere_instance => 'vmname',
+					:vsphere_instance => 'testvm-2015-09-09-13-55-54',
 				},
 				[]
 			)
 			.and_return(true)
 
 			provision_vsphere.provision_server
+		end
+	end
+
+	describe "#reconfigure_vm" do
+
+		shared_examples 'no adapter' do
+			it "does nothing" do
+				expect(vsphere).to receive(:reconfigure_vm).with(instance, vm_config)
+				provision_vsphere.reconfigure_vm
+			end
+		end
+
+		shared_examples 'single adapter' do |name|
+			before do
+				provision_vsphere.instance_variable_set("@vm_config", {networks: {'adapter' => 'network'}})
+			end
+
+			it "sets network '#{name}'" do
+				expect(vsphere).to receive(:reconfigure_vm).with(instance, {networks: {'adapter' => name}})
+				provision_vsphere.reconfigure_vm
+			end
+		end
+
+		before do
+			provision_vsphere.instance_variable_set("@vm", instance)
+		end
+
+		context 'network param set' do
+
+			it_behaves_like 'no adapter'
+			it_behaves_like 'single adapter', 'testnetwork'
+
+			context 'two adapters' do
+				before do
+					provision_vsphere.instance_variable_set("@vm_config", {networks: {'adapter1' => 'network1', 'adapter2' => 'network2'}})
+				end
+
+				it "raises error" do
+					expect {provision_vsphere.reconfigure_vm}.to raise_error(RuntimeError, "Unable to set network for multiple adapters")
+				end
+			end
+		end
+
+		context 'no network param set' do
+			before do
+				provision_vsphere.instance_variable_set("@vsphere_network", nil)
+			end
+
+			it_behaves_like 'no adapter'
+			it_behaves_like 'single adapter', 'network'
+
+			context 'two adapters' do
+				let (:vm_config) {{networks: {'adapter1' => 'network1', 'adapter2' => 'network2'}}}
+				before do
+					provision_vsphere.instance_variable_set("@vm_config", vm_config)
+				end
+
+				it 'passes adapters unchanged' do
+					expect(vsphere).to receive(:reconfigure_vm).with(instance, vm_config)
+					provision_vsphere.reconfigure_vm
+				end
+			end
 		end
 	end
 end

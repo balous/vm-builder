@@ -54,17 +54,42 @@ module PackerTemplates
 			return result
 		end
 
-		def reconfigure_vm(vm, params)
+		def reconfigure_networks(vm, networks)
 
+			changes = []
+
+			networks.each do |label, network|
+				net = vm.resourcePool.owner.network.find{|n| n.name == network}
+
+				old = vm.config.hardware.device.find{|d| d.deviceInfo.label == 'Network adapter 1'}
+
+				new = old.clone
+				new.backing = RbVmomi::VIM::VirtualEthernetCardNetworkBackingInfo(
+					:network => net,
+					:deviceName => network,
+				)
+
+				edit = RbVmomi::VIM.VirtualDeviceConfigSpec(
+					operation: :edit,
+					device: new
+				)
+
+				changes.push(edit)
+			end
+
+			return changes
+		end
+
+		def reconfigure_disks(vm, disks)
 			disk_changes = []
 
-			params[:disks] = [] if params[:disks].nil?
+			disks = [] if disks.nil?
 
-			params[:disks].each do |label, params|
+			disks.each do |label, params|
 				oldDisk = vm.disks.find{|d| d.deviceInfo.label == label}
 				newDisk = oldDisk.dup
 
-				newDisk.capacityInKB     = params[:capacity] * 1024 * 1024 if not params[:capacity].nil?
+				newDisk.capacityInKB = params[:capacity] * 1024 * 1024 if not params[:capacity].nil?
 
 				change = RbVmomi::VIM.VirtualDeviceConfigSpec(
 					device: newDisk,
@@ -74,10 +99,19 @@ module PackerTemplates
 				disk_changes.push change
 			end
 
+			return disk_changes
+		end
+
+		def reconfigure_vm(vm, params)
+
+			deviceChange = []
+			deviceChange.concat(reconfigure_disks(vm, params[:disks]))
+			deviceChange.concat(reconfigure_networks(vm, params[:networks]))
+
 			config = RbVmomi::VIM.VirtualMachineConfigSpec(
 				memoryMB: params[:mem],
 				numCPUs: params[:cpus],
-				deviceChange: disk_changes,
+				deviceChange: deviceChange,
 			)
 
 			vm.ReconfigVM_Task(:spec => config).wait_for_completion

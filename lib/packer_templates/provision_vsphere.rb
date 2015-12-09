@@ -45,12 +45,11 @@ module PackerTemplates
 			}
 
 			# if you want to start on existing VM, uncomment and update this and comment some lines below
-#			@vm = @vsphere.list_templates(/saio-2015-12-02-15-14-02/).sort{|a, b| a.name <=> b.name}[-1]
+#			@vm = @vsphere.list_templates(/saio-2015-12-08-15-15-30/).sort{|a, b| a.name <=> b.name}[-1]
 
 			@vm = @vsphere.create_instance(template, instance_params)
 
-			@logger.info("Configuring virtual HW")
-			@vsphere.reconfigure_vm(@vm, @vm_config)
+			reconfigure_vm()
 
 			@logger.info("Starting instance #{@vm.name}")
 			@vsphere.start_instance(@vm)
@@ -86,6 +85,21 @@ module PackerTemplates
 			ret = PackerTemplates::Packer.build(@packer_template, 'null', variables, flags)
 
 			raise "Provisioning failed." if not ret
+		end
+
+		def reconfigure_vm
+			@logger.info("Configuring virtual HW")
+
+			#override network adapter's default with command line param value
+			if (not @vsphere_network.nil?) and (not @vm_config[:networks].nil?)
+				raise "Unable to set network for multiple adapters" if @vm_config[:networks].size != 1
+
+				first = @vm_config[:networks].keys.first
+				@vm_config[:networks][first] = @vsphere_network
+
+			end
+
+			@vsphere.reconfigure_vm(@vm, @vm_config)
 		end
 
 		def go
