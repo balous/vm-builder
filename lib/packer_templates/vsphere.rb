@@ -58,6 +58,8 @@ module PackerTemplates
 
 			changes = []
 
+			networks = [] if networks.nil?
+
 			networks.each do |label, network|
 				net = vm.resourcePool.owner.network.find{|n| n.name == network}
 
