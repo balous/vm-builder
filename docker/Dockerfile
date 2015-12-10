@@ -3,7 +3,7 @@ FROM debian:jessie
 ENV PACKER_VERSION 0.8.6
 
 ENV OVFTOOL_BUNDLE VMware-ovftool-4.1.0-2459827-lin.x86_64.bundle
-ENV OVFTOOL_URL http://swarchive.samepage.in/vmware-ovftool/${OVFTOOL_BUNDLE}
+ENV OVFTOOL_URL https://swarchive.samepage.in/vmware-ovftool/${OVFTOOL_BUNDLE}
 
 RUN apt-get -y update ; apt-get install -y curl unzip ruby ruby-dev make g++ zlib1g-dev patch expect
 
