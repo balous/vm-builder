@@ -22,6 +22,8 @@ module PackerTemplates
 			@ssh_user        = params[:ssh_user]
 			@ssh_pass        = params[:ssh_pass]
 
+			@vm_config       = params[:vm_config]
+
 			@vsphere_host             = params[:vsphere_host]
 			@vsphere_network          = params[:vsphere_network]
 			@vsphere_datastore        = params[:vsphere_datastore]

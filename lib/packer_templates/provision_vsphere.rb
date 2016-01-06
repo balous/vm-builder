@@ -17,7 +17,6 @@ module PackerTemplates
 		def initialize(params)
 
 			@base_template = params[:base_template]
-			@vm_config     = params[:vm_config]
 			@finalize_hook = params[:finalize_hook]
 			super(params)
 		end

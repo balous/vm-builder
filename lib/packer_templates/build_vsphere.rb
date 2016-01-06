@@ -69,12 +69,21 @@ module PackerTemplates
 			)
 		end
 
+		def reconfigure_vm
+			@logger.info("Configuring virtual HW")
+
+			if @vm_config != nil
+				@vsphere.reconfigure_vm(@vm, @vm_config)
+			end
+		end
+
 		def go
 			@logger.info("Building '#{@vm_name}' on hypervisor '#{vsphere_host}'.")
 
 			connect_vsphere
 			build_template
 			register_template
+			reconfigure_vm
 
 			@logger.info("Finished successfully.")
 		end
