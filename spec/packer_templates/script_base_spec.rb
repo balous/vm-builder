@@ -20,6 +20,7 @@ describe PackerTemplates::ScriptBase do
 			vsphere_network:          'testnetwork',
 			vsphere_pool:             'testpool',
 			vsphere_compute_resource: 'testcompute',
+			vm_config:                {foo: 'bar'},
 		)
 	end
 
@@ -56,6 +57,7 @@ describe PackerTemplates::ScriptBase do
 			it {expect(script.packer_vars).to include(var: 'val')}
 			it {expect(script.ssh_user).to eq "testuser"}
 			it {expect(script.ssh_pass).to eq "testpass"}
+			it {expect(script.vm_config).to include(foo: 'bar')}
 		end
 
 		context 'missing host' do
