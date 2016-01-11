@@ -25,7 +25,7 @@ module PackerTemplates
 
 			@logger.info("Listing templates")
 			# get the latest template
-			regexp = Regexp.new("#{@base_template}-\\d\\d\\d\\d-\\d\\d-\\d\\d-\\d\\d-\\d\\d-\\d\\d")
+			regexp = Regexp.new("#{@base_template}-\\d+$")
 			templates = @vsphere.list_templates(regexp)
 
 			template = templates.sort{|a, b| a.name <=> b.name}[-1]
