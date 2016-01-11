@@ -11,6 +11,7 @@ describe PackerTemplates::ScriptBase do
 
 			packer_template: "testtemplate",
 			packer_vars:     {var: 'val'},
+			packer_var_file: "var-file",
 
 			ssh_user: 'testuser',
 			ssh_pass: 'testpass',
@@ -55,6 +56,7 @@ describe PackerTemplates::ScriptBase do
 			it {expect(script.vm_name).to eq "testvm-2015-09-09-13-55-54"}
 			it {expect(script.packer_template).to eq "testtemplate"}
 			it {expect(script.packer_vars).to include(var: 'val')}
+			it {expect(script.packer_var_file).to eq 'var-file'}
 			it {expect(script.ssh_user).to eq "testuser"}
 			it {expect(script.ssh_pass).to eq "testpass"}
 			it {expect(script.vm_config).to include(foo: 'bar')}

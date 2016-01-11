@@ -11,6 +11,7 @@ describe PackerTemplates::BuildVsphere do
 
 			packer_template: "testtemplate.json",
 			packer_vars:     {var: 'val'},
+			packer_var_file: "var-file",
 
 			ssh_user: 'testuser',
 			ssh_pass: 'testpass',
@@ -71,7 +72,8 @@ describe PackerTemplates::BuildVsphere do
 						:cm               => 'puppet',
 						:var              => 'val',
 					},
-					['force']
+					['force'],
+					'var-file'
 				)
 				.and_return(true)
 

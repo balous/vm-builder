@@ -81,7 +81,7 @@ module PackerTemplates
 				#	'debug',
 			]
 
-			ret = PackerTemplates::Packer.build(@packer_template, 'null', variables, flags)
+			ret = PackerTemplates::Packer.build(@packer_template, 'null', variables, flags, @packer_var_file)
 
 			raise "Provisioning failed." if not ret
 		end

@@ -9,7 +9,8 @@ module PackerTemplates
 	class ScriptBase
 
 		attr_reader :vsphere_host, :vsphere_user, :vsphere_pass, :vsphere_network,
-			:vsphere_datastore, :vsphere_pool, :vsphere_compute_resource, :packer_template, :packer_vars, :name, :vm_name, :vm_config,
+			:vsphere_datastore, :vsphere_pool, :vsphere_compute_resource, :packer_template, :packer_vars, :packer_var_file,
+			:name, :vm_name, :vm_config,
 			:ssh_user, :ssh_pass
 
 		def initialize(params)
@@ -18,6 +19,7 @@ module PackerTemplates
 
 			@packer_template = params[:packer_template]
 			@packer_vars     = params[:packer_vars]
+			@packer_var_file = params[:packer_var_file]
 
 			@ssh_user        = params[:ssh_user]
 			@ssh_pass        = params[:ssh_pass]

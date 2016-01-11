@@ -54,7 +54,7 @@ module PackerTemplates
 
 			variables = get_variables
 
-			ret = PackerTemplates::Packer.build(@packer_template, 'vmware-iso', variables, flags)
+			ret = PackerTemplates::Packer.build(@packer_template, 'vmware-iso', variables, flags, @packer_var_file)
 		end
 
 		def register_template

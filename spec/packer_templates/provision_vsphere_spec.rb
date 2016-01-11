@@ -86,7 +86,8 @@ describe PackerTemplates::ProvisionVsphere do
 					:ssh_password     => 'testpass',
 					:vsphere_instance => 'testvm-2015-09-09-13-55-54',
 				},
-				[]
+				[],
+				nil
 			)
 			.and_return(true)
 
