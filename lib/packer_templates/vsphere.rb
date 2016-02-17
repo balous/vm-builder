@@ -82,20 +82,51 @@ module PackerTemplates
 			return changes
 		end
 
+		def create_disk(vm, params)
+			disk = RbVmomi::VIM::VirtualDisk()
+
+			disk.key = -1
+
+			disk.controllerKey = vm.config.hardware.device.find{|d| d.to_s =~ /VirtualLsiLogicController/}.key
+
+			disk.backing = RbVmomi::VIM::VirtualDiskFlatVer2BackingInfo(
+				diskMode: :persistent,
+				fileName: vm.config.files.vmPathName.gsub(/\/.*$/, "/#{params[:fname]}.vmdk"),
+				datastore: vm.datastore[0],
+				thinProvisioned: true,
+			)
+
+			return disk
+		end
+
 		def reconfigure_disks(vm, disks)
 			disk_changes = []
 
-			disks = [] if disks.nil?
+			disk_count = vm.disks.count
 
+			disks = [] if disks.nil?
 			disks.each do |label, params|
 				oldDisk = vm.disks.find{|d| d.deviceInfo.label == label}
-				newDisk = oldDisk.dup
+
+				if not oldDisk.nil?
+					newDisk = oldDisk.dup
+					operation = :edit
+					file_operation = nil
+				else
+					newDisk = create_disk(vm, params)
+					newDisk.unitNumber = disk_count
+					disk_count = disk_count + 1
+
+					operation = :add
+					file_operation = :create
+				end
 
 				newDisk.capacityInKB = params[:capacity] * 1024 * 1024 if not params[:capacity].nil?
 
 				change = RbVmomi::VIM.VirtualDeviceConfigSpec(
 					device: newDisk,
-					operation: :edit,
+					operation: operation,
+					fileOperation: file_operation,
 				)
 
 				disk_changes.push change
