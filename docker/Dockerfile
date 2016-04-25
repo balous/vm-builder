@@ -11,7 +11,7 @@ RUN gem install rbvmomi
 
 RUN mkdir /tmp/packer \
     && cd /tmp/packer \
-    && curl -O -sS -L https://dl.bintray.com/mitchellh/packer/packer_${PACKER_VERSION}_linux_amd64.zip \
+    && curl -O -sS -L https://releases.hashicorp.com/packer/${PACKER_VERSION}/packer_${PACKER_VERSION}_linux_amd64.zip \
     && unzip packer_${PACKER_VERSION}_linux_amd64.zip \
     && rm packer_${PACKER_VERSION}_linux_amd64.zip \
     && strip -S packer* \
