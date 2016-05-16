@@ -100,7 +100,6 @@ module PackerTemplates
 		end
 
 		def reconfigure_disks(vm, disks)
-			disk_changes = []
 
 			disk_count = vm.disks.count
 
@@ -129,16 +128,19 @@ module PackerTemplates
 					fileOperation: file_operation,
 				)
 
-				disk_changes.push change
-			end
+				config = RbVmomi::VIM.VirtualMachineConfigSpec(
+					deviceChange: [change],
+				)
 
-			return disk_changes
+				vm.ReconfigVM_Task(:spec => config).wait_for_completion
+				end
+
+			return 0
 		end
 
 		def reconfigure_vm(vm, params)
 
 			deviceChange = []
-			deviceChange.concat(reconfigure_disks(vm, params[:disks]))
 			deviceChange.concat(reconfigure_networks(vm, params[:networks]))
 
 			config = RbVmomi::VIM.VirtualMachineConfigSpec(
@@ -148,6 +150,8 @@ module PackerTemplates
 			)
 
 			vm.ReconfigVM_Task(:spec => config).wait_for_completion
+
+			reconfigure_disks(vm, params[:disks])
 		end
 
 		def create_instance(template, params)
