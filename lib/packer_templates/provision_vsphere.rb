@@ -44,7 +44,7 @@ module PackerTemplates
 			}
 
 			# if you want to start on existing VM, uncomment and update this and comment some lines below
-#			@vm = @vsphere.list_templates(/saio-2015-12-08-15-15-30/).sort{|a, b| a.name <=> b.name}[-1]
+#			@vm = @vsphere.list_templates(/snipeit-2016-05-19-15-44-36/).sort{|a, b| a.name <=> b.name}[-1]
 
 			@vm = @vsphere.create_instance(template, instance_params)
 
@@ -101,6 +101,12 @@ module PackerTemplates
 			@vsphere.reconfigure_vm(@vm, @vm_config)
 		end
 
+		def create_snapshot(name)
+			@logger.info("Creating snapshot: #{name}.")
+
+			@vsphere.create_snapshot(@vm, name)
+		end
+
 		def go
 			@logger = Logger.new(STDOUT)
 
@@ -109,6 +115,8 @@ module PackerTemplates
 			provision_server
 			stop_server
 			@finalize_hook.call(@logger, @vm) if not @finalize_hook.nil?
+
+			return
 		end
 	end
 end

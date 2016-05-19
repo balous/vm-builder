@@ -154,6 +154,14 @@ module PackerTemplates
 			reconfigure_disks(vm, params[:disks])
 		end
 
+		def create_snapshot(vm, name)
+			vm.CreateSnapshot_Task(
+				name: name,
+				memory: false,
+				quiesce: false,
+			).wait_for_completion
+		end
+
 		def create_instance(template, params)
 
 			relocateSpec = RbVmomi::VIM.VirtualMachineRelocateSpec

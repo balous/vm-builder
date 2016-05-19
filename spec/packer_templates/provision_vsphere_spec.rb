@@ -156,4 +156,17 @@ describe PackerTemplates::ProvisionVsphere do
 			end
 		end
 	end
+
+	describe '#create_shapshot' do
+		before do
+			provision_vsphere.instance_variable_set("@vm", instance)
+		end
+
+		it 'calls underlying api correctly' do
+			expect(vsphere).to receive(:create_snapshot)
+				.with(instance, 'snapshot-name')
+
+			provision_vsphere.create_snapshot('snapshot-name')
+		end
+	end
 end
