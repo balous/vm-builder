@@ -30,7 +30,7 @@ module PackerTemplates
 
 			template = templates.sort{|a, b| a.name <=> b.name}[-1]
 
-			raise "Unable to find template '#{@base_template}]}'" if template.nil?
+			raise "Unable to find template '#{@base_template}'" if template.nil?
 
 			@logger.info("Found template: #{template.name}")
 
