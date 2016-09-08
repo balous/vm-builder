@@ -1,7 +1,7 @@
 require 'pp'
 require 'logger'
 
-module PackerTemplates
+module VmBuilder
 	class Packer
 
 		def self.format_build_command(template, build_name, variables, flags, var_file)

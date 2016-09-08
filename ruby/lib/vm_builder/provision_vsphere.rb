@@ -5,11 +5,11 @@ require 'optparse'
 require 'logger'
 require 'date'
 
-require 'packer_templates/script_base'
-require 'packer_templates/vsphere'
-require 'packer_templates/packer'
+require 'vm_builder/script_base'
+require 'vm_builder/vsphere'
+require 'vm_builder/packer'
 
-module PackerTemplates
+module VmBuilder
 	class ProvisionVsphere < ScriptBase 
 
 		attr_reader :vm_config, :base_template
@@ -81,7 +81,7 @@ module PackerTemplates
 				#	'debug',
 			]
 
-			ret = PackerTemplates::Packer.build(@packer_template, 'null', variables, flags, @packer_var_file)
+			ret = VmBuilder::Packer.build(@packer_template, 'null', variables, flags, @packer_var_file)
 
 			raise "Provisioning failed." if not ret
 		end

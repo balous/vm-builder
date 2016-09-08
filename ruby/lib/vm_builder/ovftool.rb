@@ -2,7 +2,7 @@ require 'pp'
 require 'logger'
 require 'cgi'
 
-module PackerTemplates
+module VmBuilder
 	class OvfTool 
 
 		def self.export(params)

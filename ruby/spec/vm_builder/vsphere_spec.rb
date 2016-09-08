@@ -1,7 +1,7 @@
 require 'spec_helper'
-require 'packer_templates/vsphere'
+require 'vm_builder/vsphere'
 
-describe PackerTemplates::Vsphere do
+describe VmBuilder::Vsphere do
 	let (:vsphere) {described_class.new('remote', 'user', 'pass')}
 	describe '#initialize' do
 

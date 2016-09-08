@@ -1,6 +1,6 @@
-require 'packer_templates/build_vsphere'
+require 'vm_builder/build_vsphere'
 
-describe PackerTemplates::BuildVsphere do
+describe VmBuilder::BuildVsphere do
 	let (:build_vsphere) do
 		described_class.new(
 			cli_opts: [
@@ -27,7 +27,7 @@ describe PackerTemplates::BuildVsphere do
 	let (:vsphere) do
 		vsphere = double
 
-		allow(PackerTemplates::Vsphere).to receive(:new)
+		allow(VmBuilder::Vsphere).to receive(:new)
 			.with(
 				'testhost', 'testuser', 'testpass'
 			)
@@ -54,7 +54,7 @@ describe PackerTemplates::BuildVsphere do
 	describe '#build_template' do
 		context 'Successfull execution' do
 			it 'Calls packer' do
-				expect(PackerTemplates::Packer).to receive(:build)
+				expect(VmBuilder::Packer).to receive(:build)
 				.with(
 					'testtemplate.json',
 					'vmware-iso',
@@ -82,7 +82,7 @@ describe PackerTemplates::BuildVsphere do
 		end
 
 		context 'Packer fails' do
-			before { allow(PackerTemplates::Packer).to receive(:build).and_return false }
+			before { allow(VmBuilder::Packer).to receive(:build).and_return false }
 			it do
 				expect {build_vsphere.build_template()}.not_to raise_error()
 			end
@@ -106,7 +106,7 @@ describe PackerTemplates::BuildVsphere do
 
 	describe '#export_vm' do
 		it 'Calls OvfTool' do
-			expect(PackerTemplates::OvfTool).to receive(:export)
+			expect(VmBuilder::OvfTool).to receive(:export)
 				.with(
 					dest:            'destination',
 					name:            'testvm-2015-09-09-13-55-54',

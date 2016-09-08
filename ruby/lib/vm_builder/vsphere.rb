@@ -1,7 +1,7 @@
 require 'pp'
 require 'rbvmomi'
 
-module PackerTemplates
+module VmBuilder
 	class Vsphere
 
 		attr_reader :connection

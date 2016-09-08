@@ -4,12 +4,12 @@ require 'date'
 require 'logger'
 require 'tempfile'
 
-require 'packer_templates/packer'
-require 'packer_templates/vsphere'
-require 'packer_templates/script_base'
-require 'packer_templates/ovftool'
+require 'vm_builder/packer'
+require 'vm_builder/vsphere'
+require 'vm_builder/script_base'
+require 'vm_builder/ovftool'
 
-module PackerTemplates
+module VmBuilder
 	class BuildVsphere < ScriptBase
 
 		def initialize(params)
@@ -54,7 +54,7 @@ module PackerTemplates
 
 			variables = get_variables
 
-			ret = PackerTemplates::Packer.build(@packer_template, 'vmware-iso', variables, flags, @packer_var_file)
+			ret = VmBuilder::Packer.build(@packer_template, 'vmware-iso', variables, flags, @packer_var_file)
 		end
 
 		def register_template
@@ -91,7 +91,7 @@ module PackerTemplates
 		def export_vm (dest)
 
 			@logger.info("Exporting vm '#{@vm_name}' to OVF '#{dest}'.")
-			return PackerTemplates::OvfTool.export(
+			return VmBuilder::OvfTool.export(
 				dest:            dest,
 				name:            @vm_name,
 				host:            @vsphere_host,

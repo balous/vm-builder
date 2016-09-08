@@ -1,6 +1,6 @@
-require 'packer_templates/script_base'
+require 'vm_builder/script_base'
 
-describe PackerTemplates::ScriptBase do
+describe VmBuilder::ScriptBase do
 	let (:script) do
 		described_class.new(
 			cli_opts: [
@@ -85,7 +85,7 @@ describe PackerTemplates::ScriptBase do
 		it 'connects to host' do
 			vsphere = double
 
-			expect(PackerTemplates::Vsphere).to receive(:new)
+			expect(VmBuilder::Vsphere).to receive(:new)
 				.with(
 					'testhost', 'testuser', 'testpass'
 				)

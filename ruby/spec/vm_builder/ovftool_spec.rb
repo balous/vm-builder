@@ -1,7 +1,7 @@
 require 'spec_helper'
-require 'packer_templates/ovftool'
+require 'vm_builder/ovftool'
 
-describe PackerTemplates::OvfTool do
+describe VmBuilder::OvfTool do
 	before do
 		  $stdout.stub(:write)
 	end

@@ -1,6 +1,6 @@
-require 'packer_templates/provision_vsphere'
+require 'vm_builder/provision_vsphere'
 
-describe PackerTemplates::ProvisionVsphere do
+describe VmBuilder::ProvisionVsphere do
 	let (:vm_config) {{foo: 'bar'}}
 
 	let (:provision_vsphere) do
@@ -26,7 +26,7 @@ describe PackerTemplates::ProvisionVsphere do
 		)
 	end
 
-	let(:vsphere)  {double(PackerTemplates::Vsphere)}
+	let(:vsphere)  {double(VmBuilder::Vsphere)}
 
 	let(:instance) do
 		i = double(RbVmomi::VIM::VirtualMachine)
@@ -75,7 +75,7 @@ describe PackerTemplates::ProvisionVsphere do
 		end
 
 		it 'Calls packer' do
-			expect(PackerTemplates::Packer).to receive(:build)
+			expect(VmBuilder::Packer).to receive(:build)
 			.with(
 				'testtemplate.json',
 				'null',

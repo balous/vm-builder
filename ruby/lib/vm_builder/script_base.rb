@@ -3,9 +3,9 @@ require 'optparse'
 require 'date'
 require 'logger'
 require 'tempfile'
-require 'packer_templates/vsphere'
+require 'vm_builder/vsphere'
 
-module PackerTemplates
+module VmBuilder
 	class ScriptBase
 
 		attr_reader :vsphere_host, :vsphere_user, :vsphere_pass, :vsphere_network,
@@ -81,7 +81,7 @@ module PackerTemplates
 		def connect_vsphere
 			@logger.info("Connecting to #{@vsphere_host}")
 
-			@vsphere = PackerTemplates::Vsphere.new(@vsphere_host, @vsphere_user, @vsphere_pass)
+			@vsphere = VmBuilder::Vsphere.new(@vsphere_host, @vsphere_user, @vsphere_pass)
 		end
 
 		def validate_params()

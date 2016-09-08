@@ -1,7 +1,7 @@
 require 'spec_helper'
-require 'packer_templates/packer'
+require 'vm_builder/packer'
 
-describe PackerTemplates::Packer do
+describe VmBuilder::Packer do
 	describe "::format_build_command" do
 		context "multiple flags and vars" do
 			it do
