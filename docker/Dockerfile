@@ -1,6 +1,6 @@
 FROM debian:jessie
 
-ENV PACKER_VERSION 0.8.6
+ENV PACKER_VERSION 0.10.1
 
 ENV OVFTOOL_BUNDLE VMware-ovftool-4.1.0-2459827-lin.x86_64.bundle
 ENV OVFTOOL_URL https://swarchive.samepage.in/vmware-ovftool/${OVFTOOL_BUNDLE}
