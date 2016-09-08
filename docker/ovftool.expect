@@ -9,8 +9,5 @@ send "\nq"
 expect "*no]:"
 send "yes\n"
 
-expect "Press Enter to begin"
-send "\n"
-
 expect "Installation was successful."
 
