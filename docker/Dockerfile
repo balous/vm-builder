@@ -5,9 +5,11 @@ ENV PACKER_VERSION 0.8.6
 ENV OVFTOOL_BUNDLE VMware-ovftool-4.1.0-2459827-lin.x86_64.bundle
 ENV OVFTOOL_URL https://swarchive.samepage.in/vmware-ovftool/${OVFTOOL_BUNDLE}
 
+COPY vm-builder*.gem /
 RUN \
 	apt-get -y update ; apt-get install -y --no-install-recommends curl unzip ruby ruby-dev make g++ zlib1g-dev patch binutils expect && \
-	gem install rbvmomi && \
+	gem install /vm-builder*.gem && \
+	rm /vm-builder*.gem && \
 	apt-get -y remove --auto-remove ruby-dev make g++ zlib1g-dev patch && \
 	rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*
 
